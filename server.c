@@ -23,30 +23,30 @@ int main(int argc, char **argv) {
   bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr));
   listen(listenfd, LISTENQ);
  
-  struct addrinfo hints, *info, *p;
-  int gai_result;
-
-  char hostname[1024];
-  hostname[1023] = '\0';
-  gethostname(hostname, 1023);
-
-  memset(&hints, 0, sizeof hints);
-  hints.ai_family = AF_UNSPEC; /*either IPV4 or IPV6*/
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_CANONNAME;
-
-  if ((gai_result = getaddrinfo(hostname, "http", &hints, &info)) != 0) {
-    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai_result));
-    exit(1);
-  }
-
-  for(p = info; p != NULL; p = p->ai_next) {
-    printf("Server Name: %s\nIP Address: %s\n", p->ai_canonname, p->ai_address->sa_data);
-  }
- 
   for ( ; ; ) {
     connfd = accept(listenfd, (struct sockaddr *) NULL, NULL);
     ticks = time(NULL);
+   
+    struct addrinfo hints, *info, *p;
+    int gai_result;
+
+    char hostname[1024];
+    hostname[1023] = '\0';
+    gethostname(hostname, 1023);
+
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC; /*either IPV4 or IPV6*/
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_CANONNAME;
+
+    if ((gai_result = getaddrinfo(hostname, "http", &hints, &info)) != 0) {
+      fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai_result));
+      exit(1);
+    }
+
+    for (p = info; p != NULL; p = p->ai_next) {
+      printf("Server Name: %s\nIP Address: %s\n", p->ai_canonname, p->ai_address->sa_data);
+    }
    
     snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
     
