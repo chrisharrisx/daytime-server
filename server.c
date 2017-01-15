@@ -1,3 +1,4 @@
+#include <netdb.h>
 #include <netinet/in.h>
 #include <time.h>
 #include <strings.h>
@@ -11,6 +12,8 @@
 int main(int argc, char **argv) {
   int listenfd, connfd;
   struct sockaddr_in servaddr;
+  socklen_t addrlen;
+  char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
   char buff[MAXLINE];
   time_t ticks;
   listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -24,7 +27,13 @@ int main(int argc, char **argv) {
   for ( ; ; ) {
     connfd = accept(listenfd, (struct sockaddr *) NULL, NULL);
     ticks = time(NULL);
+   
+    if (getnameinfo(addr, addrlen, hbuf, sizeof(hbuf), sbuf, 
+          sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV) == 0) {
+      printf("host=%s, serv=%s\n", hbuf, sbuf);
+    }
     snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
+    
     write(connfd, buff, strlen(buff));
     printf("Sending response: %s", buff);
     close(connfd);
