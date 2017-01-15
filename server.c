@@ -3,6 +3,7 @@
 #include <time.h>
 #include <strings.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #define MAXLINE 4096 /* max text line length */
