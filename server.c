@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
   }
 
   for(p = info; p != NULL; p = p->ai_next) {
-    printf("Server Name: %s\nIP Address: %s\n", p->ai_canonname, servaddr.sin_addr.s_addr);
+    printf("Server Name: %s\nIP Address: %s\n", p->ai_canonname, p->ai_address->sa_data);
   }
  
   for ( ; ; ) {
