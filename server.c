@@ -45,15 +45,14 @@ int main(int argc, char **argv) {
     }
 
     for (p = info; p != NULL; p = p->ai_next) {
-      printf("Server Name: %s\nIP Address: %s\n", p->ai_canonname, p->ai_address->sa_data);
+      printf("Server Name: %s\nIP Address: %s\n", p->ai_canonname, p->ai_addr->sa_data);
     }
    
     snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
     
     write(connfd, buff, strlen(buff));
     printf("Sending response: %s", buff);
+    freeaddrinfo(info);
     close(connfd);
   }
- 
-  freeaddrinfo(info);
 }
