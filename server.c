@@ -12,8 +12,6 @@
 int main(int argc, char **argv) {
   int listenfd, connfd;
   struct sockaddr_in servaddr;
-  socklen_t addrlen;
-  char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
   char buff[MAXLINE];
   time_t ticks;
   listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -24,18 +22,37 @@ int main(int argc, char **argv) {
   bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr));
   listen(listenfd, LISTENQ);
  
+  struct addrinfo hints, *info, *p;
+  int gai_result;
+
+  char hostname[1024];
+  hostname[1023] = '\0';
+  gethostname(hostname, 1023);
+
+  memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_UNSPEC; /*either IPV4 or IPV6*/
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_CANONNAME;
+
+  if ((gai_result = getaddrinfo(hostname, "http", &hints, &info)) != 0) {
+    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai_result));
+    exit(1);
+  }
+
+  for(p = info; p != NULL; p = p->ai_next) {
+    printf("hostname: %s\n", p->ai_canonname);
+  }
+ 
   for ( ; ; ) {
     connfd = accept(listenfd, (struct sockaddr *) NULL, NULL);
     ticks = time(NULL);
    
-    if (getnameinfo(addr, addrlen, hbuf, sizeof(hbuf), sbuf, 
-          sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV) == 0) {
-      printf("host=%s, serv=%s\n", hbuf, sbuf);
-    }
     snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
     
     write(connfd, buff, strlen(buff));
     printf("Sending response: %s", buff);
     close(connfd);
   }
+ 
+  freeaddrinfo(info);
 }
