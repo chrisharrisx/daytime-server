@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS = -std=c99
-FILES = server.c
-OBJECTS = server
+CFLAGS = -std=c99 -g -Wall
+SOURCES = server.c
+OBJECTS = $(SOURCES:.c=.o)
+MAIN = server
 
 all:
-	$(CC) $(CFLAGS) $(FILES) -o $(OBJECTS)
+	$(CC) $(CFLAGS) $(SOURCES) -o $(MAIN)
 
 clean:
-	rm $(OBJECTS)
- 
+	rm $(OBJECTS) $(MAIN)
