@@ -1,1 +1,1 @@
-# daytime
+# daytime-server
