@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -g -Wall
+CFLAGS = -std=c99 -g -Wall -D_POSIX_C_SOURCE=200112L
 SOURCES = server.c
 OBJECTS = $(SOURCES:.c=.o)
 MAIN = server
