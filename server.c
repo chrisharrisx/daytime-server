@@ -14,8 +14,8 @@
 #define ADDRESS_SIZE 128
 #define HOSTMAX 255
 #define IPMAX 128
-#define LISTENQ 1024 /* 2nd argument to listen() */
-#define MAXLINE 4096 /* max text line length */
+#define LISTENQ 1024
+#define MAXLINE 4096
 #define SERVICEMAX 32
  
 int main(int argc, char **argv) {
